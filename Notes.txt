@@ -1,0 +1,18 @@
+=> Admin Panel
+
+icon add
+ -> category
+ -> name
+ -> tag
+ -> image
+ update , delete
+
+animated icon
+ -> name
+ -> tag 
+ -> image -> regular, bold, thin, solid, stright, rounded
+
+
+-> admin login
+-> icon crud
+-> category crud 
