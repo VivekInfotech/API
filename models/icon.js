@@ -6,17 +6,37 @@ const iconSchema = new Schema({
     type: String,
     required: true
   },
+  tag: {
+    type: String,
+    required: true
+  },
   category: {
     type: String,
     required: true
   },
-  icon: {
+  regular: {
     type: String,
     required: true
   },
-  categoryID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "category"
+  bold: {
+    type: String,
+    required: true
+  },
+  thin: {
+    type: String,
+    required: true
+  },
+  solid: {
+    type: String,
+    required: true
+  },
+  straight: {
+    type: String,
+    required: true
+  },
+  rounded: {
+    type: String,
+    required: true
   }
 });
 

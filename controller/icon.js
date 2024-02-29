@@ -1,21 +1,46 @@
 const fs = require('fs').promises;
 const ICON = require('../models/icon');
 
+
 exports.iconCreate = async function (req, res, next) {
     try {
-        const svgPath = req.files[0].path;
-        req.session.svgPath = svgPath;
+        if (!req.body.name || !req.body.tag || !req.body.category) {
+            throw new Error('Name, tag and category are required fields.');
+        }
 
-        const svgContent = await fs.readFile(svgPath, 'utf-8');
-        var encoded = Buffer.from(svgContent).toString('base64');
+        const paths = {
+            regular: req.files.regular[0].path,
+            bold: req.files.bold[0].path,
+            thin: req.files.thin[0].path,
+            solid: req.files.solid[0].path,
+            straight: req.files.straight[0].path,
+            rounded: req.files.rounded[0].path
+        };
+
+        // req.session.svgPath = svgPath;
+
+        const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
+            const svgContent = await fs.readFile(filePath, 'utf-8');
+            return Buffer.from(svgContent).toString('base64');
+        }));
 
         const altText = req.body.name;
-        req.body.icon = `<img src="data:image/svg+xml;base64,${encoded}" alt="${altText}" width="100px" height="auto" />`;
+        const imgTags = Object.keys(paths).map((key, index) => {
+            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+        });
 
-        req.body.categoryID = req.categoryID
-
-        let iconData = await ICON.create(req.body);
-
+        const iconData = await ICON.create({
+            name: req.body.name,
+            tag: req.body.tag,
+            category: req.body.category,
+            regular: imgTags[0],
+            bold: imgTags[1],
+            thin: imgTags[2],
+            solid: imgTags[3],
+            straight: imgTags[4],
+            rounded: imgTags[5]
+        });
+        
         res.status(201).json({
             status: "Success",
             message: "Icon created successfully",
@@ -29,7 +54,6 @@ exports.iconCreate = async function (req, res, next) {
         });
     }
 }
-
 
 exports.iconFind = async function (req, res, next) {
     try {
@@ -52,22 +76,19 @@ exports.iconFind = async function (req, res, next) {
 
 exports.iconFindOne = async function (req, res, next) {
     try {
-
-        let data = await ICON.find({categoryID : req.params.catId})
-
-        console.log(data);
+        let data = await ICON.find({ category: req.params.categoryName });
 
         res.status(201).json({
             status: "Success",
             message: "Category Icon Find Successfully",
             data
-        })
+        });
     }
     catch (error) {
         res.status(404).json({
             status: "Fail",
             message: error.message
-        })
+        });
     }
 }
 
@@ -95,40 +116,51 @@ exports.iconDelete = async function (req, res, next) {
 
 exports.iconUpdate = async function (req, res, next) {
     try {
-        // Read the SVG file and convert it to PNG
-        const svgPath = req.files[0].path;
-        const Width = 3000;
-        const Height = 4000;
+        if (!req.body.name || !req.body.tag || !req.body.category) {
+            throw new Error('Name, tag and category are required fields.');
+        }
 
-        const svgContent = await fs.readFile(svgPath, 'utf-8');
-        const pngData = await convert(svgContent, {
-            width: Width,
-            height: Height
+        const paths = {
+            regular: req.files.regular[0].path,
+            bold: req.files.bold[0].path,
+            thin: req.files.thin[0].path,
+            solid: req.files.solid[0].path,
+            straight: req.files.straight[0].path,
+            rounded: req.files.rounded[0].path
+        };
+
+        const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
+            const svgContent = await fs.readFile(filePath, 'utf-8');
+            return Buffer.from(svgContent).toString('base64');
+        }));
+
+        const altText = req.body.name;
+        const imgTags = Object.keys(paths).map((key, index) => {
+            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
         });
 
-        // Write the PNG data to a file
-        const pngPath = svgPath.replace('.svg', '.png');
-        await fs.writeFile(pngPath, pngData);
+         // Update the interface entry in the database
+         const updatedicon = await ICON.findByIdAndUpdate(req.params.updateId, {
+            name: req.body.name,
+            tag: req.body.tag,
+            category: req.body.category,
+            regular: imgTags[0],
+            bold: imgTags[1],
+            thin: imgTags[2],
+            solid: imgTags[3],
+            straight: imgTags[4],
+            rounded: imgTags[5]
+        });
 
-        // Encode the PNG data as Base64
-        const encoded = Buffer.from(pngData).toString('base64');
-
-        // Set the req.body.icon property with the Base64-encoded image
-        const altText = "Updated Icon Image";
-        req.body.icon = `<img src="data:image/png;base64,${encoded}" alt="${altText}" width="100px" height="auto" />`;
-
-        // Update the icon entry in the database
-        const updatedIcon = await ICON.findByIdAndUpdate(req.params.updateId, { icon: req.body.icon });
-
-        if (!updatedIcon) {
+        if (!updatedicon) {
             throw new Error('Icon Not Found');
         }
 
         // Send success response
-        res.status(201).json({
+        res.status(200).json({
             status: "Success",
-            message: "Icon Update Successfully",
-            data: updatedIcon
+            message: "Icon Updated Successfully",
+            data: updatedicon
         });
     }
     catch (error) {

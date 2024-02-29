@@ -14,6 +14,9 @@ var categoryRouter = require('./routes/category');
 var iconRouter = require('./routes/icon');
 var pngIconRouter = require('./routes/pngIcon');
 var editIconRouter = require('./routes/editIcon');
+var animatedRouter = require('./routes/animated');
+var interfaceRouter = require('./routes/interface');
+var countRouter = require('./routes/count');
 
 const mongoose = require('mongoose');
 
@@ -47,6 +50,9 @@ app.use('/category', categoryRouter);
 app.use('/icon', iconRouter);
 app.use('/pngIcon', pngIconRouter);
 app.use('/editIcon', editIconRouter);
+app.use('/animated', animatedRouter);
+app.use('/interface', interfaceRouter);
+app.use('/count', countRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
