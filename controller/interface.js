@@ -24,7 +24,8 @@ exports.interfaceCreate = async function (req, res, next) {
 
         const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
         });
 
         const interfaceData = await INTERFACE.create({
@@ -133,7 +134,7 @@ exports.interfaceUpdate = async function (req, res, next) {
 
         const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
         });
 
         // Update the interface entry in the database

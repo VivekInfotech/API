@@ -26,7 +26,8 @@ exports.animatedCreate = async function (req, res, next) {
 
         const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
         });
 
         const animatedData = await ANIMATED.create({
@@ -135,7 +136,8 @@ exports.animatedUpdate = async function (req, res, next) {
 
         const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
         });
 
         // Update the animated entry in the database
