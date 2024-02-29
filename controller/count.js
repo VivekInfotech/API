@@ -2,7 +2,7 @@ const fs = require('fs').promises;
 const COUNT = require('../models/count');
 const ICON = require('../models/icon');
 const ANIMATED = require('../models/animated');
-const INTERFACE = require('../models/icon');
+const INTERFACE = require('../models/interface');
 const CATEGORY = require('../models/category');
 
 
@@ -107,7 +107,9 @@ exports.countUpdate = async function (req, res, next) {
         req.body.interface = interface.length
         req.body.category = category.length
 
-        req.body.total = await icon.length + animated.length + interface.length - 1
+        
+        req.body.total = await icon.length + animated.length + interface.length
+        console.log(req.body.total);
 
         let updatedcount = await COUNT.findByIdAndUpdate(req.params.updateId,req.body)
 
