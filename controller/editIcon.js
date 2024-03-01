@@ -5,15 +5,23 @@ const EDITICON = require('../models/editIcon');
 
 exports.editIconCreate = async function (req, res, next) {
     try {
-        const svgPath = req.session.svgPath;
-        const svgContent = await fs.readFile(svgPath, 'utf-8');
+        const paths = req.session.paths;
 
-        const colorIcon = svgContent.replace(/stroke="#\w+"/g, 'stroke="gray"');
+        const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
+            const svgContent = await fs.readFile(filePath, 'utf-8');
+            let color = req.params.color
+            console.log(color);
+            const colorIcon = svgContent.replace(/stroke="#\w+"/g, 'stroke="gray"');
+            return Buffer.from(colorIcon).toString('base64');
+        }));
 
-        const encoded = Buffer.from(colorIcon).toString('base64');
+        const imgTags = Object.keys(paths).map((key, index) => {
+            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+        });
 
-        req.body.editIcon = `<img src="data:image/svg+xml;base64,${encoded}" width="100px" height="auto" />`;
-        // req.body.editIcon = `data:image/svg+xml;base64,${encoded}`;
+        req.body.editIcon = imgTags
+        console.log("Icon data :- ",req.body.editIcon);
 
         const editIconData = await EDITICON.create(req.body);
 
@@ -35,17 +43,17 @@ exports.editIconCreate = async function (req, res, next) {
 exports.editIconFind = async function (req, res, next) {
     try {
 
-        let data = await fs.readFile('./public/demo.txt','utf-8')
+        // let data = await fs.readFile('./public/demo.txt', 'utf-8')
 
-        res.render('index', {data})
+        // res.render('index', { data })
 
-        // let data = await EDITICON.find()
+        let data = await EDITICON.find()
 
-        // res.status(201).json({
-        //     status: "Success",
-        //     message: "editIcon Find Successfully",
-        //     data
-        // })
+        res.status(201).json({
+            status: "Success",
+            message: "editIcon Find Successfully",
+            data
+        })
     }
     catch (error) {
         res.status(404).json({

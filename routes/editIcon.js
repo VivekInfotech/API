@@ -4,7 +4,7 @@ var router = express.Router();
 var editIconController = require('../controller/editIcon')
 
 
-router.post('/create', editIconController.editIconCreate);
+router.post('/create/:color', editIconController.editIconCreate);
 
 router.get('/find', editIconController.editIconFind);
 

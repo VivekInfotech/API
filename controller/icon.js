@@ -17,30 +17,30 @@ exports.iconCreate = async function (req, res, next) {
             rounded: req.files.rounded[0].path
         };
 
-        // req.session.svgPath = svgPath;
+        req.session.paths = paths;
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
             const svgContent = await fs.readFile(filePath, 'utf-8');
             return Buffer.from(svgContent).toString('base64');
         }));
 
-        const altText = req.body.name;
+        // const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
             // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
             return `data:image/svg+xml;base64,${encodedFiles[index]}`;
         });
 
-        const iconData = await ICON.create({
-            name: req.body.name,
-            tag: req.body.tag,
-            category: req.body.category,
-            regular: imgTags[0],
-            bold: imgTags[1],
-            thin: imgTags[2],
-            solid: imgTags[3],
-            straight: imgTags[4],
-            rounded: imgTags[5]
-        });
+            const iconData = await ICON.create({
+                name: req.body.name,
+                tag: req.body.tag,
+                category: req.body.category,
+                regular: imgTags[0],
+                bold: imgTags[1],
+                thin: imgTags[2],
+                solid: imgTags[3],
+                straight: imgTags[4],
+                rounded: imgTags[5]
+            });
         
         res.status(201).json({
             status: "Success",
