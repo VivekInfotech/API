@@ -44,6 +44,8 @@ router.post('/create', adminController.sequre, upload, iconController.iconCreate
 
 router.get('/find', iconController.iconFind);
 
+router.get('/findById/:iconId', iconController.iconFindById);
+
 router.get('/findOne/:categoryName', iconController.iconFindOne);
 
 router.delete('/delete/:deleteId', adminController.sequre, iconController.iconDelete);

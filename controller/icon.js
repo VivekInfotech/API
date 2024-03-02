@@ -75,6 +75,24 @@ exports.iconFind = async function (req, res, next) {
     }
 }
 
+exports.iconFindById = async function (req, res, next) {
+    try {
+        let data = await ICON.findById(req.params.iconId);
+
+        res.status(201).json({
+            status: "Success",
+            message: "Icon Find Successfully",
+            data
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
+
 exports.iconFindOne = async function (req, res, next) {
     try {
         let data = await ICON.find({ category: req.params.categoryName });
