@@ -20,7 +20,7 @@ var countRouter = require('./routes/count');
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/IconGrid')
+mongoose.connect('mongodb+srv://Brijesh:brijesh9955@cluster0.oynnosm.mongodb.net/IconGrid')
   .then(() => console.log('Connected!'))
   .catch((error) => console.log(error.message))
 
