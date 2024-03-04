@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 const editIconSchema = new Schema({
   editIcon: {
-    type : String,
-    required : true
-  }
+    type: Array,
+    required: true
+}
 });
 
 const EDITICON = mongoose.model('editIcon',editIconSchema)
