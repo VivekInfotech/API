@@ -128,6 +128,10 @@ exports.editIconUpdate = async function (req, res, next) {
                 let base64Data = icon[el].split(';base64,').pop();
                 let svgData = Buffer.from(base64Data, 'base64').toString('utf-8');
 
+                if (el === "solid") {
+                    console.log("svgData :- ", svgData);
+                }
+
                 const colorHex = "#" + color;
 
                 // Remove unwanted string
@@ -136,9 +140,19 @@ exports.editIconUpdate = async function (req, res, next) {
                 if (svgData.includes('stroke="currentColor"')) {
                     svgData = svgData.replace(/stroke="currentColor"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
+                    svgData = svgData.replace(/<path\s+d="([^"]+)"\s*\/?>/g, `<path d="$1" fill="${colorHex}" />`);
+
+                    if (el === "solid") {
+                        console.log("if solid Update svgData :- ", svgData);
+                    }
                 } else {
                     svgData = svgData.replace(/stroke="#[a-zA-Z0-9]+"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s+fill="#[a-zA-Z0-9]+"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
+                    svgData = svgData.replace(/<path\s+d="([^"]+)"\s+fill="#[a-zA-Z0-9]+"/g, `<path d="$1" fill="${colorHex}" />`);
+
+                    if (el === "solid") {
+                        console.log("else solid Update svgData :- ", svgData);
+                    }
                 }
 
                 const encodedSvg = Buffer.from(svgData).toString('base64');
@@ -149,6 +163,7 @@ exports.editIconUpdate = async function (req, res, next) {
             }
         });
 
+        // Update icon data in the database
         const updatedIconData = await ICON.findByIdAndUpdate(iconId, {
             regular: editedIconsArray[0].regular,
             bold: editedIconsArray[1].bold,
