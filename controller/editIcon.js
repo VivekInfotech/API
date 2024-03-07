@@ -1,6 +1,8 @@
 const fs = require('fs').promises;
 const EDITICON = require('../models/editIcon');
 const ICON = require('../models/icon');
+const INTERFACE = require('../models/interface');
+const ANIMATED = require('../models/animated');
 
 exports.editIconCreate = async function (req, res, next) {
     try {
@@ -107,12 +109,25 @@ exports.editIconUpdate = async function (req, res, next) {
     try {
         const iconId = req.params.updateId;
         const color = req.params.color;
+        const entityType = req.params.entityType;
 
-        if (!iconId || !color) {
-            throw new Error("Icon ID and color are required.");
+        if (!iconId || !color || !entityType) {
+            throw new Error("Icon ID, color, and entityType are required.");
         }
 
-        const icon = await ICON.findById(iconId);
+        let entityModel;
+
+        if (entityType === 'icon') {
+            entityModel = ICON;
+        } else if (entityType === 'interface') {
+            entityModel = INTERFACE;
+        } else if (entityType === 'animated') {
+            entityModel = ANIMATED;
+        } else {
+            throw new Error("Invalid entityType. Must be 'icon' or 'interface' or 'animated'.");
+        }
+
+        const icon = await entityModel.findById(iconId);
         if (!icon) {
             throw new Error("Icon not found.");
         }
@@ -148,7 +163,12 @@ exports.editIconUpdate = async function (req, res, next) {
                 } else {
                     svgData = svgData.replace(/stroke="#[a-zA-Z0-9]+"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s+fill="#[a-zA-Z0-9]+"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
-                    svgData = svgData.replace(/<path\s+d="([^"]+)"\s+fill="#[a-zA-Z0-9]+"/g, `<path d="$1" fill="${colorHex}" />`);
+
+                    if (svgData.includes('fill="#')) {
+                        svgData = svgData.replace(/<path\s+d="([^"]+)"\s+fill="#[a-zA-Z0-9]+"/g, `<path d="$1" fill="${colorHex}" />`);
+                    } else {
+                        svgData = svgData.replace(/<path\s+d="([^"]+)"\s*\/?>/g, `<path d="$1" fill="${colorHex}" />`);
+                    }
 
                     if (el === "solid") {
                         console.log("else solid Update svgData :- ", svgData);
@@ -164,7 +184,7 @@ exports.editIconUpdate = async function (req, res, next) {
         });
 
         // Update icon data in the database
-        const updatedIconData = await ICON.findByIdAndUpdate(iconId, {
+        const updatedIconData = await entityModel.findByIdAndUpdate(iconId, {
             regular: editedIconsArray[0].regular,
             bold: editedIconsArray[1].bold,
             thin: editedIconsArray[2].thin,
@@ -191,5 +211,3 @@ exports.editIconUpdate = async function (req, res, next) {
         });
     }
 };
-
-

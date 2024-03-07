@@ -90,6 +90,24 @@ exports.interfaceFindOne = async function (req, res, next) {
     }
 }
 
+exports.interfaceFindById = async function (req, res, next) {
+    try {
+        let data = await INTERFACE.findById(req.params.iconId);
+
+        res.status(201).json({
+            status: "Success",
+            message: "Interface Icon Find Successfully",
+            data
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
+
 exports.interfaceDelete = async function (req, res, next) {
     try {
 

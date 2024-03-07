@@ -46,6 +46,8 @@ router.get('/find', animatedController.animatedFind);
 
 router.get('/findOne/:categoryName', animatedController.animatedFindOne);
 
+router.get('/findById/:iconId', animatedController.animatedFindById);
+
 router.delete('/delete/:deleteId', adminController.sequre, animatedController.animatedDelete);
 
 router.put('/update/:updateId', adminController.sequre, upload, animatedController.animatedUpdate);

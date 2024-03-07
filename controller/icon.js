@@ -4,10 +4,6 @@ const ICON = require('../models/icon');
 
 exports.iconCreate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -16,32 +12,35 @@ exports.iconCreate = async function (req, res, next) {
             straight: req.files.straight[0].path,
             rounded: req.files.rounded[0].path
         };
-
+        
         req.session.paths = paths;
-
+        
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            // const svgContent = await fs.readFile(filePath, 'utf-8');
+            return await fs.readFile(filePath, 'utf-8');
+            // return Buffer.from(svgContent).toString('base64');
         }));
-
+        
+        
         // const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
             // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            // return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            return encodedFiles[index]
+        });
+        
+        const iconData = await ICON.create({
+            name: req.body.name,
+            tag: req.body.tag,
+            category: req.body.category,
+            regular: imgTags[0],
+            bold: imgTags[1],
+            thin: imgTags[2],
+            solid: imgTags[3],
+            straight: imgTags[4],
+            rounded: imgTags[5]
         });
 
-            const iconData = await ICON.create({
-                name: req.body.name,
-                tag: req.body.tag,
-                category: req.body.category,
-                regular: imgTags[0],
-                bold: imgTags[1],
-                thin: imgTags[2],
-                solid: imgTags[3],
-                straight: imgTags[4],
-                rounded: imgTags[5]
-            });
-        
         res.status(201).json({
             status: "Success",
             message: "Icon created successfully",
@@ -159,8 +158,8 @@ exports.iconUpdate = async function (req, res, next) {
             return `data:image/svg+xml;base64,${encodedFiles[index]}`;
         });
 
-         // Update the interface entry in the database
-         const updatedicon = await ICON.findByIdAndUpdate(req.params.updateId, {
+        // Update the interface entry in the database
+        const updatedicon = await ICON.findByIdAndUpdate(req.params.updateId, {
             name: req.body.name,
             tag: req.body.tag,
             category: req.body.category,

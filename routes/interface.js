@@ -45,6 +45,8 @@ router.get('/find', interfaceController.interfaceFind);
 
 router.get('/findOne/:categoryName', interfaceController.interfaceFindOne);
 
+router.get('/findById/:iconId', interfaceController.interfaceFindById);
+
 router.delete('/delete/:deleteId', adminController.sequre, interfaceController.interfaceDelete);
 
 router.put('/update/:updateId', adminController.sequre, upload, interfaceController.interfaceUpdate);

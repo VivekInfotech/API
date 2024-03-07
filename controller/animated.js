@@ -92,6 +92,24 @@ exports.animatedFindOne = async function (req, res, next) {
     }
 }
 
+exports.animatedFindById = async function (req, res, next) {
+    try {
+        let data = await ANIMATED.findById(req.params.iconId);
+
+        res.status(201).json({
+            status: "Success",
+            message: "Animated Icon Find Successfully",
+            data
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
+
 exports.animatedDelete = async function (req, res, next) {
     try {
 

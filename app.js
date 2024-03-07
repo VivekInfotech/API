@@ -21,8 +21,8 @@ var countRouter = require('./routes/count');
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb+srv://Brijesh:brijesh9955@cluster0.oynnosm.mongodb.net/IconGrid')
-  .then(() => console.log('Connected!'))
-  .catch((error) => console.log(error.message))
+.then(() => console.log('Connected!'))
+.catch((error) => console.log(error.message))
 
 var app = express();
 

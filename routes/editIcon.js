@@ -10,7 +10,7 @@ router.get('/find', editIconController.editIconFind);
 
 router.delete('/delete/:deleteId', editIconController.editIconDelete);
 
-router.put('/update/:updateId/:color', editIconController.editIconUpdate);
+router.put('/update/:updateId/:color/:entityType', editIconController.editIconUpdate);
 
 
 
