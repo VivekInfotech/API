@@ -9,26 +9,20 @@ exports.iconCreate = async function (req, res, next) {
             bold: req.files.bold[0].path,
             thin: req.files.thin[0].path,
             solid: req.files.solid[0].path,
-            straight: req.files.straight[0].path,
+            straight: req.files.straight ? req.files.straight[0].path : '', // Check if req.files.straight exists
             rounded: req.files.rounded[0].path
         };
-        
-        req.session.paths = paths;
-        
+
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            // const svgContent = await fs.readFile(filePath, 'utf-8');
-            return await fs.readFile(filePath, 'utf-8');
-            // return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
-        
-        
-        // const altText = req.body.name;
+
         const imgTags = Object.keys(paths).map((key, index) => {
-            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
-            // return `data:image/svg+xml;base64,${encodedFiles[index]}`;
             return encodedFiles[index]
         });
-        
+
         const iconData = await ICON.create({
             name: req.body.name,
             tag: req.body.tag,
@@ -46,8 +40,7 @@ exports.iconCreate = async function (req, res, next) {
             message: "Icon created successfully",
             data: iconData
         });
-    }
-    catch (error) {
+    } catch (error) {
         res.status(404).json({
             status: "Fail",
             message: error.message
@@ -55,10 +48,13 @@ exports.iconCreate = async function (req, res, next) {
     }
 }
 
+
 exports.iconFind = async function (req, res, next) {
     try {
 
         let data = await ICON.find()
+
+        console.log(data[0].regular);
 
         res.status(201).json({
             status: "Success",
@@ -134,10 +130,6 @@ exports.iconDelete = async function (req, res, next) {
 
 exports.iconUpdate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -148,14 +140,13 @@ exports.iconUpdate = async function (req, res, next) {
         };
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
 
-        const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            return encodedFiles[index]
         });
 
         // Update the interface entry in the database

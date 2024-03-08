@@ -4,10 +4,6 @@ const INTERFACE = require('../models/interface');
 
 exports.interfaceCreate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-        
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -18,14 +14,13 @@ exports.interfaceCreate = async function (req, res, next) {
         };
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
 
-        const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            return encodedFiles[index]
         });
 
         const interfaceData = await INTERFACE.create({
@@ -132,10 +127,6 @@ exports.interfaceDelete = async function (req, res, next) {
 
 exports.interfaceUpdate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -146,13 +137,13 @@ exports.interfaceUpdate = async function (req, res, next) {
         };
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
 
-        const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            return encodedFiles[index]
         });
 
         // Update the interface entry in the database

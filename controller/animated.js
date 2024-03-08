@@ -6,10 +6,6 @@ const ANIMATED = require('../models/animated');
 
 exports.animatedCreate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -20,14 +16,13 @@ exports.animatedCreate = async function (req, res, next) {
         };
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
 
-        const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
+            return encodedFiles[index]
         });
 
         const animatedData = await ANIMATED.create({
@@ -134,10 +129,6 @@ exports.animatedDelete = async function (req, res, next) {
 
 exports.animatedUpdate = async function (req, res, next) {
     try {
-        if (!req.body.name || !req.body.tag || !req.body.category) {
-            throw new Error('Name, tag and category are required fields.');
-        }
-
         const paths = {
             regular: req.files.regular[0].path,
             bold: req.files.bold[0].path,
@@ -148,14 +139,13 @@ exports.animatedUpdate = async function (req, res, next) {
         };
 
         const encodedFiles = await Promise.all(Object.values(paths).map(async (filePath) => {
-            const svgContent = await fs.readFile(filePath, 'utf-8');
-            return Buffer.from(svgContent).toString('base64');
+            let svgData = await fs.readFile(filePath, 'utf-8');
+            svgData = svgData.replace(/<svg[^>]*>/, '').replace(/<\/svg>/, '');
+            return svgData;
         }));
 
-        const altText = req.body.name;
         const imgTags = Object.keys(paths).map((key, index) => {
-            return `data:image/svg+xml;base64,${encodedFiles[index]}`;
-            // return `<img src="data:image/svg+xml;base64,${encodedFiles[index]}" alt="${altText}" width="100px" height="auto" />`;
+            return encodedFiles[index]
         });
 
         // Update the animated entry in the database

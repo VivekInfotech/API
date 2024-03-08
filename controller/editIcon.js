@@ -35,14 +35,10 @@ exports.editIconCreate = async function (req, res, next) {
                     const colorHex = "#" + color;
                     svgContent = svgContent.replace(/stroke="currentColor"/g, `stroke="${colorHex}"`);
                     svgContent = svgContent.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
-                    const encodedSvg = Buffer.from(svgContent).toString('base64');
-                    // editedIcon[key] = `<img src="data:image/svg+xml;base64,${encodedSvg}" width="100px" height="auto" />`;
-                    editedIcon[key] = `${encodedSvg}`
+                    editedIcon[key] = svgContent
                 } else {
                     editedIcon[key] = icon[key];
                 }
-                // Push the edited icon object to the array
-                // console.log("editedIcon :- ", editedIcon);
                 editedIconsArray.push(editedIcon);
             }
         });
@@ -132,6 +128,8 @@ exports.editIconUpdate = async function (req, res, next) {
             throw new Error("Icon not found.");
         }
 
+        // console.log("Icon :- ", icon);
+
         const allowedProperties = ['regular', 'bold', 'thin', 'solid', 'straight', 'rounded'];
 
         const editedIconsArray = [];
@@ -140,26 +138,17 @@ exports.editIconUpdate = async function (req, res, next) {
             if (icon) {
                 const editedIcon = {};
 
-                let base64Data = icon[el].split(';base64,').pop();
-                let svgData = Buffer.from(base64Data, 'base64').toString('utf-8');
-
-                if (el === "solid") {
-                    console.log("svgData :- ", svgData);
-                }
-
                 const colorHex = "#" + color;
 
-                // Remove unwanted string
-                svgData = svgData.replace(/�'m/g, '');
+                let svgData = icon[el]
+
+                // svgData = svgData.replace(/�'m/g, '');
 
                 if (svgData.includes('stroke="currentColor"')) {
                     svgData = svgData.replace(/stroke="currentColor"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
                     svgData = svgData.replace(/<path\s+d="([^"]+)"\s*\/?>/g, `<path d="$1" fill="${colorHex}" />`);
-
-                    if (el === "solid") {
-                        console.log("if solid Update svgData :- ", svgData);
-                    }
+                    
                 } else {
                     svgData = svgData.replace(/stroke="#[a-zA-Z0-9]+"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s+fill="#[a-zA-Z0-9]+"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
@@ -169,21 +158,14 @@ exports.editIconUpdate = async function (req, res, next) {
                     } else {
                         svgData = svgData.replace(/<path\s+d="([^"]+)"\s*\/?>/g, `<path d="$1" fill="${colorHex}" />`);
                     }
-
-                    if (el === "solid") {
-                        console.log("else solid Update svgData :- ", svgData);
-                    }
                 }
 
-                const encodedSvg = Buffer.from(svgData).toString('base64');
-
-                editedIcon[el] = `data:image/svg+xml;base64,${encodedSvg}`;
-                // editedIcon[el] = `<img src="data:image/svg+xml;base64,${encodedSvg}" width="100px" height="auto" />`;
+                editedIcon[el] = svgData
                 editedIconsArray.push(editedIcon);
             }
         });
+        console.log("editedIconsArray :- ",editedIconsArray);
 
-        // Update icon data in the database
         const updatedIconData = await entityModel.findByIdAndUpdate(iconId, {
             regular: editedIconsArray[0].regular,
             bold: editedIconsArray[1].bold,
