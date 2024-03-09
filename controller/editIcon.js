@@ -142,8 +142,6 @@ exports.editIconUpdate = async function (req, res, next) {
 
                 let svgData = icon[el]
 
-                // svgData = svgData.replace(/�'m/g, '');
-
                 if (svgData.includes('stroke="currentColor"')) {
                     svgData = svgData.replace(/stroke="currentColor"/g, `stroke="${colorHex}"`);
                     svgData = svgData.replace(/<circle\s+cx="(\d+)"\s+cy="(\d+)"\s+r="(\d+)"\s*\/?>/g, `<circle cx="$1" cy="$2" r="$3" fill="${colorHex}" />`);
@@ -164,7 +162,6 @@ exports.editIconUpdate = async function (req, res, next) {
                 editedIconsArray.push(editedIcon);
             }
         });
-        console.log("editedIconsArray :- ",editedIconsArray);
 
         const updatedIconData = await entityModel.findByIdAndUpdate(iconId, {
             regular: editedIconsArray[0].regular,

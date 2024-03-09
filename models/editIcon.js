@@ -5,9 +5,9 @@ const editIconSchema = new Schema({
   editIcon: {
     type: Array,
     required: true
-}
+  }
 });
 
-const EDITICON = mongoose.model('editIcon',editIconSchema)
+const EDITICON = mongoose.model('editIcon', editIconSchema)
 
 module.exports = EDITICON

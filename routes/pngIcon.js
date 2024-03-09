@@ -4,13 +4,13 @@ var router = express.Router();
 var pngIconController = require('../controller/pngIcon')
 
 
-router.post('/create', pngIconController.pngIconCreate);
+router.post('/create/:id/:entityType', pngIconController.pngIconCreate);
 
 router.get('/find', pngIconController.pngIconFind);
 
 router.delete('/delete/:deleteId', pngIconController.pngIconDelete);
 
-router.put('/update/:updateId', pngIconController.pngIconUpdate);
+router.put('/update/:updateId/:entityType', pngIconController.pngIconUpdate);
 
 
 

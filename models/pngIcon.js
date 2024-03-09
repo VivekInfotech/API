@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const pngIconSchema = new Schema({
   pngIcon: {
-    type : String,
-    required : true
+    type: Array,
+    required: true
   }
 });
 

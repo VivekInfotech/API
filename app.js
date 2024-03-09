@@ -17,6 +17,7 @@ var editIconRouter = require('./routes/editIcon');
 var animatedRouter = require('./routes/animated');
 var interfaceRouter = require('./routes/interface');
 var countRouter = require('./routes/count');
+var popularRouter = require('./routes/popular');
 
 const mongoose = require('mongoose');
 
@@ -53,6 +54,7 @@ app.use('/editIcon', editIconRouter);
 app.use('/animated', animatedRouter);
 app.use('/interface', interfaceRouter);
 app.use('/count', countRouter);
+app.use('/popular', popularRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
