@@ -17,7 +17,8 @@ var editIconRouter = require('./routes/editIcon');
 var animatedRouter = require('./routes/animated');
 var interfaceRouter = require('./routes/interface');
 var countRouter = require('./routes/count');
-var popularRouter = require('./routes/popular');
+var popularRouter = require('./routes/popular-Icon');
+var popCategotyRouter = require('./routes/pop-category');
 
 const mongoose = require('mongoose');
 
@@ -55,6 +56,7 @@ app.use('/animated', animatedRouter);
 app.use('/interface', interfaceRouter);
 app.use('/count', countRouter);
 app.use('/popular', popularRouter);
+app.use('/popCategory', popCategotyRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

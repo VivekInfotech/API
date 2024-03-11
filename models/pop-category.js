@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const populateSchema = new Schema({
+const popCategorySchema = new Schema({
   card: {
     type : String,
     required : true
@@ -21,6 +21,6 @@ const populateSchema = new Schema({
   }
 });
 
-const POPULATE = mongoose.model('populate',populateSchema)
+const POPCATEGORY = mongoose.model('popCategory',popCategorySchema)
 
-module.exports = POPULATE
+module.exports = POPCATEGORY
