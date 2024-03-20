@@ -17,6 +17,7 @@ var editIconRouter = require('./routes/editIcon');
 var animatedRouter = require('./routes/animated');
 var interfaceRouter = require('./routes/interface');
 var countRouter = require('./routes/count');
+var tagRouter = require('./routes/tag');
 var popularRouter = require('./routes/popular-Icon');
 var popCategotyRouter = require('./routes/pop-category');
 
@@ -55,6 +56,7 @@ app.use('/editIcon', editIconRouter);
 app.use('/animated', animatedRouter);
 app.use('/interface', interfaceRouter);
 app.use('/count', countRouter);
+app.use('/tag', tagRouter);
 app.use('/popular', popularRouter);
 app.use('/popCategory', popCategotyRouter);
 

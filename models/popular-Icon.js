@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const popularIconSchema = new Schema({
-  card: {
-    type : String,
-    required : true
-  },
   category: {
     type: String,
     required: true

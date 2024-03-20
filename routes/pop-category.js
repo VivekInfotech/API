@@ -8,6 +8,8 @@ router.post('/create', adminController.sequre, popCategoryController.popCategory
 
 router.get('/find', popCategoryController.popCategoryFind);
 
+router.get('/findOne/:cardName', popCategoryController.popCategoryFindOne);
+
 router.delete('/delete/:deleteId', adminController.sequre, popCategoryController.popCategoryDelete);
 
 router.put('/update/:updateId', adminController.sequre, popCategoryController.popCategoryUpdate);

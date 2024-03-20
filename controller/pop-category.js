@@ -38,6 +38,24 @@ exports.popCategoryFind = async function (req, res, next) {
     }
 }
 
+exports.popCategoryFindOne = async function (req, res, next) {
+    try {
+        let data = await POPCATEGORY.find({ card: req.params.cardName });
+
+        res.status(201).json({
+            status: "Success",
+            message: "popular Category Find By Card Name Successfully",
+            data
+        });
+    }
+    catch (error) {
+        res.status(404).json({
+            status: "Fail",
+            message: error.message
+        });
+    }
+}
+
 exports.popCategoryDelete = async function (req, res, next) {
     try {
 

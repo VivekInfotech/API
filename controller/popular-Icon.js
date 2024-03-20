@@ -48,7 +48,7 @@ exports.popularFind = async function (req, res, next) {
 
 exports.popularFindById = async function (req, res, next) {
     try {
-        let data = await POPULAR.findById(req.params.popularId);
+        let data = await POPULAR.findById(req.params.iconId);
 
         res.status(201).json({
             status: "Success",

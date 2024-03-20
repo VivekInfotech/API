@@ -3,6 +3,7 @@ const EDITICON = require('../models/editIcon');
 const ICON = require('../models/icon');
 const INTERFACE = require('../models/interface');
 const ANIMATED = require('../models/animated');
+const POPULAR = require('../models/popular-Icon');
 
 exports.editIconCreate = async function (req, res, next) {
     try {
@@ -119,16 +120,16 @@ exports.editIconUpdate = async function (req, res, next) {
             entityModel = INTERFACE;
         } else if (entityType === 'animated') {
             entityModel = ANIMATED;
+        } else if (entityType === 'popular') {
+            entityModel = POPULAR;
         } else {
-            throw new Error("Invalid entityType. Must be 'icon' or 'interface' or 'animated'.");
+            throw new Error("Invalid entityType. Must be 'icon' or 'interface' or 'animated' or 'popular'.");
         }
 
         const icon = await entityModel.findById(iconId);
         if (!icon) {
             throw new Error("Icon not found.");
         }
-
-        // console.log("Icon :- ", icon);
 
         const allowedProperties = ['regular', 'bold', 'thin', 'solid', 'straight', 'rounded'];
 
