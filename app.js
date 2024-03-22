@@ -23,7 +23,7 @@ var popCategotyRouter = require('./routes/pop-category');
 
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb+srv://Brijesh:brijesh9955@cluster0.oynnosm.mongodb.net/IconGrid')
+mongoose.connect('mongodb+srv://brijesh:brijesh123@cluster0.oynnosm.mongodb.net/IconGrid')
 .then(() => console.log('Connected!'))
 .catch((error) => console.log(error.message))
 

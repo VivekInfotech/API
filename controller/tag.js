@@ -13,8 +13,14 @@ exports.tagFindByName = async function (req, res, next) {
             POPULAR.find({ tag: req.params.tagName })
         ]);
 
-        // Combine data from all models into a single array
-        const data = [].concat(icon, interfaceData, animated, popularIcon);
+        const data = {
+            icon: icon.map(el => el),
+            interfaceData: interfaceData.map(el => el),
+            animated: animated.map(el => el),
+            popularIcon: popularIcon.map(el => el)
+        };
+
+        // const data = [].concat(icon, interfaceData, animated, popularIcon);
 
         res.status(200).json({
             status: "Success",
@@ -45,12 +51,12 @@ exports.tagFind = async function (req, res, next) {
             popularIcon: popularIcon.map(el => el.tag)
         };
 
-        const allTags = [].concat(data.icon, data.interfaceData, data.animated, data.popularIcon);
+        // const allTags = [].concat(data.icon, data.interfaceData, data.animated, data.popularIcon);
 
         res.status(201).json({
             status: "Success",
             message: "All Tag Names Found Successfully",
-            data: allTags
+            data: data
         });
     } catch (error) {
         res.status(404).json({
