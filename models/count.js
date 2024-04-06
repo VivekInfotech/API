@@ -6,6 +6,10 @@ const countSchema = new Schema({
     type: String,
     required: true
   },
+  totalCat: {
+    type: String,
+    required: true
+  },
   icon: {
     type: String,
     required: true
@@ -19,6 +23,10 @@ const countSchema = new Schema({
     required: true
   },
   category: {
+    type: String,
+    required: true
+  },
+  popcategory: {
     type: String,
     required: true
   }

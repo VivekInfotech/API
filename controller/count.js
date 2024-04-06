@@ -4,6 +4,7 @@ const ICON = require('../models/icon');
 const ANIMATED = require('../models/animated');
 const INTERFACE = require('../models/interface');
 const CATEGORY = require('../models/category');
+const POPCATEGORY = require('../models/pop-category');
 const POPULAR = require('../models/popular-Icon');
 
 
@@ -13,13 +14,20 @@ exports.countCreate = async function (req, res, next) {
         let animated = await ANIMATED.find()
         let interface = await INTERFACE.find()
         let category = await CATEGORY.find()
+        let popcategory = await POPCATEGORY.find()
+        let popular = await POPULAR.find()
 
         req.body.icon = icon.length
         req.body.animated = animated.length
         req.body.interface = interface.length
         req.body.category = category.length
+        req.body.popcategory = popcategory.length
+        req.body.popular = popular.length
 
-        req.body.total = await icon.length + animated.length + interface.length
+        
+        req.body.total = await icon.length + animated.length + interface.length + popular.length
+        req.body.totalCat = await category.length + popcategory.length
+        console.log(req.body.total,req.body.totalCat);
 
         let countData = await COUNT.create(req.body)
         
@@ -102,17 +110,20 @@ exports.countUpdate = async function (req, res, next) {
         let animated = await ANIMATED.find()
         let interface = await INTERFACE.find()
         let category = await CATEGORY.find()
+        let popcategory = await POPCATEGORY.find()
         let popular = await POPULAR.find()
 
         req.body.icon = icon.length
         req.body.animated = animated.length
         req.body.interface = interface.length
         req.body.category = category.length
+        req.body.popcategory = popcategory.length
         req.body.popular = popular.length
 
         
         req.body.total = await icon.length + animated.length + interface.length + popular.length
-        console.log(req.body.total);
+        req.body.totalCat = await category.length + popcategory.length
+        console.log(req.body.total,req.body.totalCat);
 
         let updatedcount = await COUNT.findByIdAndUpdate(req.params.updateId,req.body)
 
